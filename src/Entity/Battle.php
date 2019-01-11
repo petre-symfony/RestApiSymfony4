@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="battle_battle")
  * @ORM\Entity(repositoryClass="App\Repository\BattleRepository")
  */
 class Battle
@@ -34,9 +35,36 @@ class Battle
     private $foughtAt;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $didProgrammerWin;
+
+    /**
      * @ORM\Column(type="text")
      */
     private $notes;
+
+    /**
+     * Battle constructor.
+     * @param $programmer
+     * @param $project
+     */
+    public function __construct(Programmer $programmer, Project $project)
+    {
+        $this->programmer = $programmer;
+        $this->project = $project;
+        $this->foughtAt = new \DateTime();
+    }
+
+    public function setBattleWonByProgrammer($notes)
+    {
+        $this->didProgrammerWin = true;
+        $this->notes = $notes;
+    }
+    public function setBattleLostByProgrammer($notes){
+        $this->didProgrammerWin = false;
+        $this->notes = $notes;
+    }
 
     public function getId(): ?int
     {
@@ -48,23 +76,10 @@ class Battle
         return $this->programmer;
     }
 
-    public function setProgrammer(?Programmer $programmer): self
-    {
-        $this->programmer = $programmer;
-
-        return $this;
-    }
 
     public function getProject(): ?Project
     {
         return $this->project;
-    }
-
-    public function setProject(?Project $project): self
-    {
-        $this->project = $project;
-
-        return $this;
     }
 
     public function getFoughtAt(): ?\DateTimeInterface
@@ -72,22 +87,13 @@ class Battle
         return $this->foughtAt;
     }
 
-    public function setFoughtAt(\DateTimeInterface $foughtAt): self
+    public function getDidProgrammerWin(): ?bool
     {
-        $this->foughtAt = $foughtAt;
-
-        return $this;
+        return $this->didProgrammerWin;
     }
 
     public function getNotes(): ?string
     {
         return $this->notes;
-    }
-
-    public function setNotes(string $notes): self
-    {
-        $this->notes = $notes;
-
-        return $this;
     }
 }
