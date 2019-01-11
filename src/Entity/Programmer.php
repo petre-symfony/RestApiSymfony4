@@ -17,7 +17,7 @@ class Programmer
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, unique=true)
      */
     private $nickname;
 
@@ -34,13 +34,19 @@ class Programmer
     /**
      * @ORM\Column(type="integer")
      */
-    private $powerLevel;
+    private $powerLevel = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    public function __construct($nickname = null, $avatarNumber = null)
+    {
+        $this->nickname = $nickname;
+        $this->avatarNumber = $avatarNumber;
+    }
 
     public function getId(): ?int
     {
