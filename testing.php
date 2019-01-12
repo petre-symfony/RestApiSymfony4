@@ -20,6 +20,18 @@ echo 'StatusCode: ' . $response->getStatusCode();
 echo "\n";
 echo 'Content-Type: ' . json_encode($response->getHeader('content-type'));
 echo "\n";
+echo 'Location: ' . $response->getHeader('Location');
+echo "\n\n\n\n";
+echo $response->getBody();
+echo "\n\n";
+$programmerUrl = $response->getHeader('Location')[0];
+
+//2) Get to fetch that programmer
+$response = $client->get($programmerUrl);
+echo 'StatusCode: ' . $response->getStatusCode();
+echo "\n";
+echo 'Content-Type: ' . json_encode($response->getHeader('content-type'));
+echo "\n";
 echo 'Location: ' . json_encode($response->getHeader('Location'));
 echo "\n\n\n\n";
 echo $response->getBody();

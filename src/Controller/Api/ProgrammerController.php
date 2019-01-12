@@ -38,7 +38,24 @@ class ProgrammerController extends AbstractController{
         $em->flush();
 
         $response =  new Response('It worked. Believe me - I\'m an API', 201);
-        $response->headers->set('Location', '/some/programmer/url');
+        $response->headers->set('Location', $this->generateUrl("api_programmers_show", [
+            'nickname' => $programmer->getNickname()
+        ]));
+
         return $response;;
+    }
+
+    /**
+     * @Route("/api/programmers/{nickname}", name="api_programmers_show", methods="GET")
+     */
+    public function showAction(Programmer $programmer){
+        $data = [
+            'nickname' => $programmer->getNickname(),
+            'avatarNumber' => $programmer->getAvatarNumber(),
+            'powerLevel' => $programmer->getPowerLevel(),
+            'tagLine' => $programmer->getTagLine()
+        ];
+
+        return new Response(json_encode($data));
     }
 }
