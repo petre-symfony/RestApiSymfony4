@@ -2,19 +2,18 @@
 
 namespace App\Tests\Controller\Api;
 
+use App\Tests\ApiTestCase;
 use GuzzleHttp\Client;
-use PHPUnit\Framework\TestCase;
 
-class ProgrammerControllerTest extends TestCase {
+class ProgrammerControllerTest extends ApiTestCase {
 	public function testPOST(){
 		$client = new Client([
 			'base_uri' => 'http://localhost:8000',
 			'http_errors' => false
 		]);
 
-		$nickname = 'ObjectOrienter'.rand(0,999);
 		$data = array(
-			'nickname' => $nickname,
+			'nickname' => 'ObjectOrienter',
 			'avatarNumber' => 5,
 			'tagLine' => '<?php'
 		);
@@ -26,7 +25,7 @@ class ProgrammerControllerTest extends TestCase {
 		]);
 
         $this->assertEquals(201,  $response->getStatusCode());
-        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertEquals('/api/programmers/ObjectOrienter',$response->getHeader('Location')[0]);
         $finishedData = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('nickname', $finishedData);
 	}
