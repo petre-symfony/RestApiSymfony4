@@ -36,6 +36,9 @@ class ProgrammerController extends AbstractController{
         $em = $this->getDoctrine()->getManager();
         $em->persist($programmer);
         $em->flush();
-        return new Response('It worked. Believe me - I\'m an API');
+
+        $response =  new Response('It worked. Believe me - I\'m an API', 201);
+        $response->headers->set('Location', '/some/programmer/url');
+        return $response;;
     }
 }

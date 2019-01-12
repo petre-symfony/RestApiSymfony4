@@ -16,5 +16,11 @@ $response = $client->post('/api/programmers', [
     'body' => json_encode($data)
 ]);
 
+echo 'StatusCode: ' . $response->getStatusCode();
+echo "\n";
+echo 'Content-Type: ' . json_encode($response->getHeader('content-type'));
+echo "\n";
+echo 'Location: ' . json_encode($response->getHeader('Location'));
+echo "\n\n\n\n";
 echo $response->getBody();
 echo "\n\n";
