@@ -66,4 +66,14 @@ class ProgrammerController extends AbstractController {
             'nickname' => $programmer->getNickname()
         ]);
     }
+
+    /**
+     * @Route("/programmers/choose", name="programmer_choose", methods="GET")
+     */
+    public function chooseAtion(ProgrammerRepository $programmerRepository){
+        $programmers = $programmerRepository->findBy(['user' => $this->getUser()]);
+        return $this->render('programmer/choose.html.twig', [
+            'programmers' => $programmers
+        ]);
+    }
 }
