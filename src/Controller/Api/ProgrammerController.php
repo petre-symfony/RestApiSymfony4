@@ -10,6 +10,7 @@ namespace App\Controller\Api;
 
 
 use App\Entity\Programmer;
+use App\Form\ProgrammerType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,8 +28,10 @@ class ProgrammerController extends AbstractController{
         $body = $request->getContent();
         $data = json_decode($body, true);
 
-        $programmer = new Programmer($data['nickname'], $data['avatarNumber']);
-        $programmer->setTagLine($data['tagLine']);
+        $programmer = new Programmer();
+        $form = $this->createForm(ProgrammerType::class, $programmer);
+        $form->submit($data);
+
         $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
         $em = $this->getDoctrine()->getManager();
         $em->persist($programmer);

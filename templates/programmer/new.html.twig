@@ -18,7 +18,14 @@
                 e.preventDefault();
                 $(this).parent().find('li').removeClass('selected');
                 $(this).addClass('selected');
-                $('.js-selectable-target').val($(this).data('number'))
+                /*$('.js-selectable-target').val($(this).data('number'))*/
+                var self = this;
+                $('.js-selectable-target option').each(function(){
+                    if($(this).textContent == $(self).data('number')){
+                        $(this).prop("selected", true);
+                    }
+                });
+                console.log($('.js-selectable-target').val());
             });
         });
     </script>
