@@ -14,6 +14,7 @@ use App\Form\ProgrammerType;
 use App\Repository\ProgrammerRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,12 +41,11 @@ class ProgrammerController extends AbstractController{
 
         $data = $this->serializeProgrammer($programmer);
         $response =  new Response(json_encode($data), 201);
-        $response->headers->set('Location', $this->generateUrl("api_programmers_show", [
-            'nickname' => $programmer->getNickname()
-        ]));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;;
+        return new JsonResponse($data, 201, [
+            'Location' => $this->generateUrl("api_programmers_show", [
+                'nickname' => $programmer->getNickname()
+            ])
+        ]);
     }
 
     /**
@@ -60,7 +60,7 @@ class ProgrammerController extends AbstractController{
 
         $response =  new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return new JsonResponse($data);
     }
 
     /**
@@ -68,13 +68,13 @@ class ProgrammerController extends AbstractController{
      */
     public function listAction(ProgrammerRepository $programmerRepository){
         $programmers  = $programmerRepository->findAll();
-        $data = ['programmers' => $programmers];
+
+        $data = ['programmers' => []];
+
         foreach ($programmers as $programmer){
             $data['programmers'][] = $this->serializeProgrammer($programmer);
         }
-        $response =  new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return new JsonResponse($data);
     }
 
     private function serializeProgrammer(Programmer $programmer){
