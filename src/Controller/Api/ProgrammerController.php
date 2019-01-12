@@ -9,6 +9,8 @@
 namespace App\Controller\Api;
 
 
+use App\Entity\Programmer;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +20,19 @@ class ProgrammerController extends AbstractController{
 	/**
 	 * @Route("/api/programmers", methods="POST")
 	 */
-    public function newAction(Request $request){
+    public function newAction(Request $request,
+        UserRepository $userRepository)
+    {
 
         $body = $request->getContent();
+        $data = json_decode($body, true);
 
-        return new Response($body);
+        $programmer = new Programmer($data['nickname'], $data['avatarNumber']);
+        $programmer->setTagLine($data['tagLine']);
+        $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($programmer);
+        $em->flush();
+        return new Response('It worked. Believe me - I\'m an API');
     }
 }

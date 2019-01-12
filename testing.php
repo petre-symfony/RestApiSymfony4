@@ -9,7 +9,7 @@ $client = new \GuzzleHttp\Client([
 $nickname = 'ObjectOrienter'.rand(0,999);
 $data = array(
     'nickname' => $nickname,
-    'avataNumber' => 5,
+    'avatarNumber' => 5,
     'tagLine' => '<?php'
 );
 $response = $client->post('/api/programmers', [
