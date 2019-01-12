@@ -31,8 +31,13 @@ $response = $client->get($programmerUrl);
 echo 'StatusCode: ' . $response->getStatusCode();
 echo "\n";
 echo 'Content-Type: ' . json_encode($response->getHeader('content-type'));
+echo "\n\n";
+
+//3) Get a collection
+$response = $client->get('api/programmers');
+echo 'StatusCode: ' . $response->getStatusCode();
 echo "\n";
-echo 'Location: ' . json_encode($response->getHeader('Location'));
-echo "\n\n\n\n";
+echo 'Content-Type: ' . json_encode($response->getHeader('content-type'));
+echo "\n";
 echo $response->getBody();
 echo "\n\n";
