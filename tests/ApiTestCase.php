@@ -66,8 +66,8 @@ class ApiTestCase extends KernelTestCase {
 
     protected function onNotSuccessfulTest(\Throwable $t)
     {
-        die('Debug onNotSuccessfullTest');
         if ($lastResponse = $this->getLastResponse()) {
+            die('Debug if onNotSuccessfullTest');
             $this->printDebug('');
             $this->printDebug('<error>Failure!</error> when making the following request:');
             $this->printLastRequestUrl();
