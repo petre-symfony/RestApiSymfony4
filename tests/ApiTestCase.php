@@ -227,6 +227,7 @@ class ApiTestCase extends KernelTestCase {
      */
     private function getLastResponse()
     {
+        var_dump(self::$history); die;
         if (!self::$history || empty(self::$history)) {
             return null;
         }
