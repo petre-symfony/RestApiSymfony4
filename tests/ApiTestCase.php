@@ -67,7 +67,6 @@ class ApiTestCase extends KernelTestCase {
     protected function onNotSuccessfulTest(\Throwable $t)
     {
         if ($lastResponse = $this->getLastResponse()) {
-            die('Debug if onNotSuccessfullTest');
             $this->printDebug('');
             $this->printDebug('<error>Failure!</error> when making the following request:');
             $this->printLastRequestUrl();
@@ -227,7 +226,6 @@ class ApiTestCase extends KernelTestCase {
      */
     private function getLastResponse()
     {
-        var_dump(self::$history);
         if (!self::$history || empty(self::$history)) {
             return null;
         }
