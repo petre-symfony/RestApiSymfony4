@@ -7,11 +7,6 @@ use GuzzleHttp\Client;
 
 class ProgrammerControllerTest extends ApiTestCase {
 	public function testPOST(){
-		$client = new Client([
-			'base_uri' => 'http://localhost:8000',
-			'http_errors' => false
-		]);
-
 		$data = array(
 			'nickname' => 'ObjectOrienter',
 			'avatarNumber' => 5,
@@ -20,7 +15,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 
 		//1) Post to create the programmer
 
-		$response = $client->post('/api/programmers', [
+		$response = $this->client->post('/api/programmers', [
 			'body' => json_encode($data)
 		]);
 
