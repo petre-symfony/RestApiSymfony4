@@ -1,7 +1,9 @@
 <?php
 namespace App\Tests;
 
+use App\Entity\User;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -218,5 +220,24 @@ class ApiTestCase extends KernelTestCase {
 		$history = self::$history;
 		$last = array_pop($history);
 		return $last['response'];
+	}
+	
+	protected function createUser($username, $plainPassword = 'foo'){
+		$user = new User();
+		$user->setUsername($username);
+		$user->setEmail($username.'@foo.com');
+		$password = $this->getService('security.password_encoder')
+				->encodePassword($user, $plainPassword);
+		$user->setPassword($password);
+		$em = $this->getEntityManager();
+		$em->persist($user);
+		$em->flush();
+		return $user;
+	}
+	/**
+	 * @return EntityManagerInterface
+	 */
+	protected function getEntityManager(){
+		return $this->getService('doctrine.orm.default_entity_manager');
 	}
 }

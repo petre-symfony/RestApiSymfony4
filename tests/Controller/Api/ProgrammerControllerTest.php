@@ -5,6 +5,12 @@ namespace App\Tests\Controller\Api;
 use App\Tests\ApiTestCase;
 
 class ProgrammerControllerTest extends ApiTestCase {
+	
+	protected function setUp(){
+		parent::setUp();
+		$this->createUser('weaverryan');
+	}
+	
 	public function testPOST(){
 		
 		$data = array(
