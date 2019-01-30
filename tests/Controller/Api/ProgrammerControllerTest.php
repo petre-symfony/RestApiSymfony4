@@ -30,4 +30,23 @@ class ProgrammerControllerTest extends ApiTestCase {
         $finishedData = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('nickname', $finishedData);
 	}
+	
+	public function testGetProgrammer(){
+		$this->createProgrammer([
+				'nickname' => 'UnitTester',
+				'avatarNumber' => '3'
+		]);
+		$response = $this->client->get('/api/programmers/UnitTester');
+		$this->assertEquals(200, $response->getStatusCode());
+		$data = json_decode($response->getBody(), true);
+		$this->assertEquals(
+				[
+						'nickname',
+						'avatarNumber',
+						'powerLevel',
+						'tagLine'
+				],
+				array_keys($data)
+		);
+	}
 }

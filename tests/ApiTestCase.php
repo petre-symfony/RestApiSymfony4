@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests;
 
+use App\Entity\Programmer;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 
 class ApiTestCase extends KernelTestCase {
@@ -239,5 +241,22 @@ class ApiTestCase extends KernelTestCase {
 	 */
 	protected function getEntityManager(){
 		return $this->getService('doctrine.orm.default_entity_manager');
+	}
+	
+	protected function createProgrammer(array $data){
+		$data = array_merge([
+			'powerLevel' => rand(0, 10),
+			'user' => $this->getEntityManager()->getRepository(User::class)
+				->findAny()
+		], $data);
+		$accessor = PropertyAccess::createPropertyAccessor();
+		$programmer = new Programmer();
+		foreach ($data as $key => $value){
+			$accessor->setValue($programmer, $key, $value);
+		}
+		$em = $this->getEntityManager();
+		$em->persist($programmer);
+		$em->flush();
+		return $programmer;
 	}
 }

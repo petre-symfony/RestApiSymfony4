@@ -59,7 +59,6 @@ class ProgrammerController extends AbstractController{
         $data = $this->serializeProgrammer($programmer);
 
         $response =  new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
         return new JsonResponse($data);
     }
 
