@@ -7,9 +7,8 @@ use App\Tests\ApiTestCase;
 class ProgrammerControllerTest extends ApiTestCase {
 	public function testPOST(){
 		
-		$nickname = 'ObjectOrienter'.rand(0,999);
 		$data = array(
-			'nickname' => $nickname,
+			'nickname' => 'ObjectOrienter',
 			'avatarNumber' => 5,
 			'tagLine' => '<?php'
 		);
@@ -21,7 +20,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 		]);
 
         $this->assertEquals(201,  $response->getStatusCode());
-        $this->assertTrue($response->hasHeader('Location'));
+        $this->assertEquals('/api/programmers/ObjectOrienter', $response->getHeader('Location')[0]);
         $finishedData = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('nickname', $finishedData);
 	}

@@ -1,10 +1,11 @@
 <?php
 namespace App\Tests;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use GuzzleHttp\Client;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ApiTestCase extends TestCase {
+class ApiTestCase extends KernelTestCase {
 	private static $staticClient;
 
 	/** @var  Client*/
@@ -15,9 +16,26 @@ class ApiTestCase extends TestCase {
 			'base_uri' => 'http://localhost:8000',
 			'http_errors' => false
 		]);
+		
+		self::bootKernel();
 	}
 
 	public function setUp(){
 		$this->client = self::$staticClient;
+		
+		$this->purgeDatabase();
+	}
+	
+	public function tearDown(){
+		//purposefully overriding so Symfony's kernel isn't shut down
+	}
+	
+	protected function getService($id){
+		return self::$kernel->getContainer()->get($id);
+	}
+	
+	private function purgeDatabase(){
+		$purger = new ORMPurger($this->getService('doctrine')->getManager());
+		$purger->purge();
 	}
 }
