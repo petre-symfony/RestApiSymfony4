@@ -61,7 +61,7 @@ class ApiTestCase extends KernelTestCase {
 		//purposefully overriding so Symfony's kernel isn't shut down
 	}
 	
-	protected function onNotSuccessfulTest(Exception $e){
+	protected function onNotSuccessfulTest(\Throwable $t){
 		if ($lastResponse = $this->getLastResponse()) {
 			$this->printDebug('');
 			$this->printDebug('<error>Failure!</error> when making the following request:');
@@ -69,7 +69,7 @@ class ApiTestCase extends KernelTestCase {
 			$this->printDebug('');
 			$this->debugResponse($lastResponse);
 		}
-		throw $e;
+		throw $t;
 	}
 	
 	private function purgeDatabase(){
@@ -113,31 +113,32 @@ class ApiTestCase extends KernelTestCase {
 				$this->printDebug('');
 				$crawler = new Crawler($body);
 				// very specific to Symfony's error page
-				$isError = $crawler->filter('#traces-0')->count() > 0
-						|| strpos($body, 'looks like something went wrong') !== false;
+				$isError = $crawler->filter('.trace-line ')->count() > 0
+						|| strpos($body, 'Symfony Exception') !== false;
 				if ($isError) {
 					$this->printDebug('There was an Error!!!!');
 					$this->printDebug('');
 				} else {
 					$this->printDebug('HTML Summary (h1 and h2):');
 				}
-				// finds the h1 and h2 tags and prints them only
-				foreach ($crawler->filter('h1, h2')->extract(array('_text')) as $header) {
-					// avoid these meaningless headers
-					if (strpos($header, 'Stack Trace') !== false) {
-						continue;
-					}
-					if (strpos($header, 'Logs') !== false) {
-						continue;
-					}
-					// remove line breaks so the message looks nice
-					$header = str_replace("\n", ' ', trim($header));
-					// trim any excess whitespace "foo   bar" => "foo bar"
-					$header = preg_replace('/(\s)+/', ' ', $header);
+				foreach ($crawler->filter('.exception-message-wrapper h1')->extract(array('_text')) as $text) {
+					$text = $this->removeLineBreaks($text);
 					if ($isError) {
-						$this->printErrorBlock($header);
+						$this->printErrorBlock($text);
 					} else {
-						$this->printDebug($header);
+						$this->printDebug($text);
+					}
+				}
+				foreach ($crawler
+          ->filter('.trace-line')
+          ->first()
+          ->extract(array('_text')) as $text
+				){
+					$text = $this->removeLineBreaks($text);
+					if ($isError) {
+						$this->printErrorBlock($text);
+					} else {
+						$this->printDebug($text);
 					}
 				}
 				/*
@@ -160,6 +161,14 @@ class ApiTestCase extends KernelTestCase {
 				$this->printDebug($body);
 			}
 		}
+	}
+	
+	protected function removeLineBreaks($text){
+		// remove line breaks so the message looks nice
+		$text = str_replace("\n", ' ', trim($text));
+		// trim any excess whitespace "foo   bar" => "foo bar"
+		$text = preg_replace('/(\s)+/', ' ', $text);
+		return $text;
 	}
 	
 	/**
