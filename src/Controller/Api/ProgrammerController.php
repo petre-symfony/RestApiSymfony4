@@ -121,6 +121,7 @@ class ProgrammerController extends AbstractController{
 	private function processForm(Request $request, FormInterface $form){
 		$body = $request->getContent();
 		$data = json_decode($body, true);
-		$form->submit($data);
+		$clearMissing = $request->getMethod() !== 'PATCH';
+		$form->submit($data, $clearMissing);
 	}
 }
