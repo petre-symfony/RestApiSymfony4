@@ -45,5 +45,6 @@ class ProgrammerControllerTest extends ApiTestCase {
 			'powerLevel',
 			'tagLine'
 		]);
+		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
 	}
 }
