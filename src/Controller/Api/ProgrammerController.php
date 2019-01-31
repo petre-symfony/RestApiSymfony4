@@ -85,7 +85,9 @@ class ProgrammerController extends AbstractController{
 			throw $this->createNotFoundException('No programmer found for username ' . $nickname);
 		}
 		
-		$form = $this->createForm(ProgrammerType::class, $programmer);
+		$form = $this->createForm(ProgrammerType::class, $programmer, [
+			'is_edit' => true
+		]);
 		$this->processForm($request, $form);
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);

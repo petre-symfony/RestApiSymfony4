@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +16,9 @@ class ProgrammerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nickname')
+            ->add('nickname', TextType::class, [
+            		'disabled' => $options['is_edit']
+            ])
             ->add('avatarNumber', ChoiceType::class, [
                 'choices' => [
                     // the key is the value that will be set
@@ -36,7 +39,8 @@ class ProgrammerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Programmer::class,
+          'data_class' => Programmer::class,
+	        'is_edit' => false
         ]);
     }
 }
