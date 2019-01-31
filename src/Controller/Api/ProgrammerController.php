@@ -96,6 +96,19 @@ class ProgrammerController extends AbstractController{
 		return new JsonResponse($data, 200);
 	}
 	
+	/**
+	 * @Route("/api/programmers/{nickname}", methods="DELETE")
+	 */
+	public function deleteAction($nickname, ProgrammerRepository $programmerRepository){
+		$programmer = $programmerRepository->findOneBy(['nickname' => $nickname]);
+		if($programmer){
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($programmer);
+			$em->flush();
+		}
+		return new Response(null, 204);
+	}
+	
 	private function serializeProgrammer(Programmer $programmer){
 		return [
 				'nickname' => $programmer->getNickname(),
