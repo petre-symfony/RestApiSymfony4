@@ -47,4 +47,20 @@ class ProgrammerControllerTest extends ApiTestCase {
 		]);
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
 	}
+	
+	public function testGETProgrammersCollection(){
+		$this->createProgrammer([
+			'nickname' => 'UnitTester',
+			'avatarNumber' => '3'
+		]);
+		$this->createProgrammer([
+			'nickname' => 'CowboyCoder',
+			'avatarNumber' => '10'
+		]);
+		$response = $this->client->get('/api/programmers');
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->asserter()->assertResponsePropertyIsArray($response, 'programmers');
+		$this->asserter()->assertResponsePropertyCount($response, 'programmers', 2);
+		$this->asserter()->assertResponsePropertyEquals($response, 'programmers[1].nickname', 'CowboyCoder');
+	}
 }
