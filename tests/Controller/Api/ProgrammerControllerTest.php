@@ -66,7 +66,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 	
 	public function testPUTProgrammer(){
 		$data = array(
-				'nickname' => 'ObjectOrienter',
+				'nickname' => 'CowboyCoder',
 				'avatarNumber' => 2,
 				'tagLine' => 'foo'
 		);
@@ -74,7 +74,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 				'nickname' => 'CowboyCoder',
 				'avatarNumber' => '10'
 		]);
-		$response = $this->client->put('/api/programmers/UnitTester', [
+		$response = $this->client->put('/api/programmers/CowboyCoder', [
 				'body' => json_encode($data)
 		]);
 		$this->assertEquals(200, $response->getStatusCode());

@@ -84,4 +84,26 @@ class ProgrammerController extends AbstractController{
             'tagLine' => $programmer->getTagLine()
         ];
     }
+	
+	/**
+	 * @Route("/api/programmers/{nickname}", name="api_programmers_update", methods="PUT")
+	 */
+	public function putAction($nickname, Request $request,
+    ProgrammerRepository $programmerRepository
+	){
+		$programmer = $programmerRepository->findOneBy(['nickname' => $nickname]);
+		if(!$programmer){
+			throw $this->createNotFoundException('No programmer found for username ' . $nickname);
+		}
+		$body = $request->getContent();
+		$data = json_decode($body, true);
+		$form = $this->createForm(ProgrammerType::class, $programmer);
+		$form->submit($data);
+		$em = $this->getDoctrine()->getManager();
+		$em->persist($programmer);
+		$em->flush();
+		$data = $this->serializeProgrammer($programmer);
+		$response =  new Response(json_encode($data), 201);
+		return new JsonResponse($data, 200);
+	}
 }
