@@ -11,6 +11,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Programmer;
 use App\Form\ProgrammerType;
+use App\Form\UpdateProgrammerType;
 use App\Repository\ProgrammerRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,9 +86,7 @@ class ProgrammerController extends AbstractController{
 			throw $this->createNotFoundException('No programmer found for username ' . $nickname);
 		}
 		
-		$form = $this->createForm(ProgrammerType::class, $programmer, [
-			'is_edit' => true
-		]);
+		$form = $this->createForm(UpdateProgrammerType::class, $programmer);
 		$this->processForm($request, $form);
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
