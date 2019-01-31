@@ -7,27 +7,25 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
-{
-    private $encoder;
+class UserFixtures extends Fixture {
+  private $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder) {
-        $this->encoder = $encoder;
-    }
+  public function __construct(UserPasswordEncoderInterface $encoder) {
+      $this->encoder = $encoder;
+  }
 
-    public function load(ObjectManager $manager)
-    {
-        $user = new User();
-        $user->setUsername('weaverryan');
-        $user->setEmail('ryan@knplabs.com');
-        $plainPassword = 'foo';
-        $encoded = $this->encoder->encodePassword($user, $plainPassword);
-        $user->setPassword($encoded);
-        $roles = [];
-        $roles[] = 'ROLE_USER';
-        $user->setRoles($roles);
-        $manager->persist($user);
+  public function load(ObjectManager $manager) {
+    $user = new User();
+    $user->setUsername('weaverryan');
+    $user->setEmail('ryan@knplabs.com');
+    $plainPassword = 'foo';
+    $encoded = $this->encoder->encodePassword($user, $plainPassword);
+    $user->setPassword($encoded);
+    $roles = [];
+    $roles[] = 'ROLE_USER';
+    $user->setRoles($roles);
+    $manager->persist($user);
 
-        $manager->flush();
-    }
+    $manager->flush();
+  }
 }

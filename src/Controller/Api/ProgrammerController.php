@@ -25,46 +25,47 @@ class ProgrammerController extends APIBaseController {
 	/**
 	 * @Route("/api/programmers", methods="POST")
 	 */
-    public function newAction(Request $request,
-        UserRepository $userRepository
-    ){
-        $programmer = new Programmer();
-        $form = $this->createForm(ProgrammerType::class, $programmer);
-	      $this->processForm($request, $form);
+  public function newAction(
+    Request $request,
+    UserRepository $userRepository
+  ){
+    $programmer = new Programmer();
+    $form = $this->createForm(ProgrammerType::class, $programmer);
+    $this->processForm($request, $form);
 
-        $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($programmer);
-        $em->flush();
-	
-		    $response = $this->createAPIResponse($programmer, 201);
-		    $location = $this->generateUrl("api_programmers_show", [
-	        'nickname' => $programmer->getNickname()]);
-		    $response->headers->set('Location',  $location);
-		    return $response;
+    $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($programmer);
+    $em->flush();
+
+    $response = $this->createAPIResponse($programmer, 201);
+    $location = $this->generateUrl("api_programmers_show", [
+      'nickname' => $programmer->getNickname()]);
+    $response->headers->set('Location',  $location);
+    return $response;
+  }
+
+  /**
+   * @Route("/api/programmers/{nickname}", name="api_programmers_show", methods="GET")
+   */
+  public function showAction(Programmer $programmer){
+    if(!$programmer){
+      throw $this->createNotFoundException('No programmer found for username ' . $nickname);
     }
 
-    /**
-     * @Route("/api/programmers/{nickname}", name="api_programmers_show", methods="GET")
-     */
-    public function showAction(Programmer $programmer){
-        if(!$programmer){
-            throw $this->createNotFoundException('No programmer found for username ' . $nickname);
-        }
-	
-	    return $this->createAPIResponse($programmer);
-    }
+    return $this->createAPIResponse($programmer);
+  }
 
-    /**
-     * @Route("/api/programmers", name="api_programmers_list", methods="GET")
-     */
-    public function listAction(ProgrammerRepository $programmerRepository){
-      $programmers  = $programmerRepository->findAll();
-	
-	    $data = ['programmers' => $programmers];
-	    
-	    return $this->createAPIResponse($data);
-    }
+  /**
+   * @Route("/api/programmers", name="api_programmers_list", methods="GET")
+   */
+  public function listAction(ProgrammerRepository $programmerRepository){
+    $programmers  = $programmerRepository->findAll();
+
+    $data = ['programmers' => $programmers];
+    
+    return $this->createAPIResponse($data);
+  }
 
     
 	/**
@@ -102,10 +103,10 @@ class ProgrammerController extends APIBaseController {
 	
 	private function serializeProgrammer(Programmer $programmer){
 		return [
-				'nickname' => $programmer->getNickname(),
-				'avatarNumber' => $programmer->getAvatarNumber(),
-				'powerLevel' => $programmer->getPowerLevel(),
-				'tagLine' => $programmer->getTagLine()
+			'nickname' => $programmer->getNickname(),
+			'avatarNumber' => $programmer->getAvatarNumber(),
+			'powerLevel' => $programmer->getPowerLevel(),
+			'tagLine' => $programmer->getTagLine()
 		];
 	}
 	
