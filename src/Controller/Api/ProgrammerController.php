@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormInterface;
 
 class ProgrammerController extends AbstractController{
 	/**
@@ -26,13 +27,9 @@ class ProgrammerController extends AbstractController{
     public function newAction(Request $request,
         UserRepository $userRepository)
     {
-
-        $body = $request->getContent();
-        $data = json_decode($body, true);
-
         $programmer = new Programmer();
         $form = $this->createForm(ProgrammerType::class, $programmer);
-        $form->submit($data);
+	      $this->processForm($request, $form);
 
         $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
         $em = $this->getDoctrine()->getManager();
@@ -76,15 +73,7 @@ class ProgrammerController extends AbstractController{
         return new JsonResponse($data);
     }
 
-    private function serializeProgrammer(Programmer $programmer){
-        return [
-            'nickname' => $programmer->getNickname(),
-            'avatarNumber' => $programmer->getAvatarNumber(),
-            'powerLevel' => $programmer->getPowerLevel(),
-            'tagLine' => $programmer->getTagLine()
-        ];
-    }
-	
+    
 	/**
 	 * @Route("/api/programmers/{nickname}", name="api_programmers_update", methods="PUT")
 	 */
@@ -95,15 +84,29 @@ class ProgrammerController extends AbstractController{
 		if(!$programmer){
 			throw $this->createNotFoundException('No programmer found for username ' . $nickname);
 		}
-		$body = $request->getContent();
-		$data = json_decode($body, true);
+		
 		$form = $this->createForm(ProgrammerType::class, $programmer);
-		$form->submit($data);
+		$this->processForm($request, $form);
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
 		$em->flush();
 		$data = $this->serializeProgrammer($programmer);
 		$response =  new Response(json_encode($data), 201);
 		return new JsonResponse($data, 200);
+	}
+	
+	private function serializeProgrammer(Programmer $programmer){
+		return [
+				'nickname' => $programmer->getNickname(),
+				'avatarNumber' => $programmer->getAvatarNumber(),
+				'powerLevel' => $programmer->getPowerLevel(),
+				'tagLine' => $programmer->getTagLine()
+		];
+	}
+	
+	private function processForm(Request $request, FormInterface $form){
+		$body = $request->getContent();
+		$data = json_decode($body, true);
+		$form->submit($data);
 	}
 }
