@@ -76,9 +76,9 @@ class ProgrammerController extends AbstractController{
 
     
 	/**
-	 * @Route("/api/programmers/{nickname}", name="api_programmers_update", methods="PUT")
+	 * @Route("/api/programmers/{nickname}", name="api_programmers_update", methods="PATCH|PUT")
 	 */
-	public function putAction($nickname, Request $request,
+	public function updateAction($nickname, Request $request,
     ProgrammerRepository $programmerRepository
 	){
 		$programmer = $programmerRepository->findOneBy(['nickname' => $nickname]);
