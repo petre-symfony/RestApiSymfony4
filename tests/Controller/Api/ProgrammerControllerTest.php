@@ -66,7 +66,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 	
 	public function testPUTProgrammer(){
 		$data = array(
-				'nickname' => 'CowboyCoder',
+				'nickname' => 'CowgirlCoder',
 				'avatarNumber' => 2,
 				'tagLine' => 'foo'
 		);
@@ -80,5 +80,6 @@ class ProgrammerControllerTest extends ApiTestCase {
 		$this->assertEquals(200, $response->getStatusCode());
 		$data = json_decode($response->getBody(), true);
 		$this->asserter()->assertResponsePropertyEquals($response, 'avatarNumber', 2);
+		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'CowboyCoder');
 	}
 }
