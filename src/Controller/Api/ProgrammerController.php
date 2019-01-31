@@ -20,8 +20,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
+use JMS\Serializer\SerializerInterface;
 
 class ProgrammerController extends AbstractController{
+	private $serializer;
+	
+	public function __construct(SerializerInterface $serializer){
+		$this->serializer = $serializer;
+	}
+	
 	/**
 	 * @Route("/api/programmers", methods="POST")
 	 */
@@ -36,14 +43,13 @@ class ProgrammerController extends AbstractController{
         $em = $this->getDoctrine()->getManager();
         $em->persist($programmer);
         $em->flush();
-
-        $data = $this->serializeProgrammer($programmer);
-        $response =  new Response(json_encode($data), 201);
-        return new JsonResponse($data, 201, [
-            'Location' => $this->generateUrl("api_programmers_show", [
-                'nickname' => $programmer->getNickname()
-            ])
-        ]);
+	
+	      $json = $this->serialize($programmer);
+	      return new Response($json, 201, [
+			    'Location' => $this->generateUrl("api_programmers_show", [
+					    'nickname' => $programmer->getNickname()
+			    ])
+	      ]);
     }
 
     /**
@@ -53,25 +59,22 @@ class ProgrammerController extends AbstractController{
         if(!$programmer){
             throw $this->createNotFoundException('No programmer found for username ' . $nickname);
         }
-
-        $data = $this->serializeProgrammer($programmer);
-
-        $response =  new Response(json_encode($data));
-        return new JsonResponse($data);
+	
+	    $json = $this->serialize($programmer);
+	
+	    return new Response($json);
     }
 
     /**
      * @Route("/api/programmers", name="api_programmers_list", methods="GET")
      */
     public function listAction(ProgrammerRepository $programmerRepository){
-        $programmers  = $programmerRepository->findAll();
-
-        $data = ['programmers' => []];
-
-        foreach ($programmers as $programmer){
-            $data['programmers'][] = $this->serializeProgrammer($programmer);
-        }
-        return new JsonResponse($data);
+      $programmers  = $programmerRepository->findAll();
+	
+	    $data = ['programmers' => $programmers];
+	    $json = $this->serialize($data);
+	
+	    return new Response($json);
     }
 
     
@@ -91,9 +94,10 @@ class ProgrammerController extends AbstractController{
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($programmer);
 		$em->flush();
-		$data = $this->serializeProgrammer($programmer);
-		$response =  new Response(json_encode($data), 201);
-		return new JsonResponse($data, 200);
+		
+		$json = $this->serialize($programmer);
+		
+		return new Response($json, 200);
 	}
 	
 	/**
@@ -123,5 +127,9 @@ class ProgrammerController extends AbstractController{
 		$data = json_decode($body, true);
 		$clearMissing = $request->getMethod() !== 'PATCH';
 		$form->submit($data, $clearMissing);
+	}
+	
+	private function serialize($data){
+		return $this->serializer->serialize($data, 'json');
 	}
 }

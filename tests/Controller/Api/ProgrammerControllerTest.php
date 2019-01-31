@@ -42,8 +42,7 @@ class ProgrammerControllerTest extends ApiTestCase {
 		$this->asserter()->assertResponsePropertiesExist($response, [
 			'nickname',
 			'avatarNumber',
-			'powerLevel',
-			'tagLine'
+			'powerLevel'
 		]);
 		$this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
 	}
