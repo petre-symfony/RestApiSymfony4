@@ -35,6 +35,8 @@ class ApiTestCase extends KernelTestCase {
 	 * @var FormatterHelper
 	 */
 	private $formatterHelper;
+	
+	private $responseAsserter;
 
 	public static function setUpBeforeClass(){
 		$handler = HandlerStack::create();
@@ -258,5 +260,12 @@ class ApiTestCase extends KernelTestCase {
 		$em->persist($programmer);
 		$em->flush();
 		return $programmer;
+	}
+	
+	protected function asserter(){
+		if ($this->responseAsserter === null){
+			$this->responseAsserter = new ResponseAsserter();
+		}
+		return $this->responseAsserter;
 	}
 }
